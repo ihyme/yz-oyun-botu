@@ -1,3 +1,5 @@
 pynput==1.7.3
 Pil-Tools
 pypiwin32
+numpy
+opencv-python
