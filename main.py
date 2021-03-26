@@ -1,11 +1,23 @@
 from pynput import mouse,keyboard
 import os
+import win32gui
 from lib.traning import saveData
 gameName = 'AirRivals_R'
+farePath = os.path.join("Data","Train","Fare")
+klavyePath = os.path.join("Data","Train","Klavye")
+
+toplist, winlist = [], []
+def enum_cb(hwnd, results):
+    winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
+win32gui.EnumWindows(enum_cb, toplist)
+pencere = [(hwnd, title) for hwnd, title in winlist if gameName.lower() in title.lower()]
+pencere = pencere[0]
+hwnd = pencere[0]
+
+
 def klavyeDinle():
-   dataPath = 'Data\\Train\\Klavye'
-   if not os.path.exists(dataPath):
-      os.makedirs(dataPath)
+   if not os.path.exists(klavyePath):
+      os.makedirs(klavyePath)
    def on_press(key):
       try:
          print('alphanumeric key {0} pressed'.format(key.char))
@@ -19,15 +31,15 @@ def klavyeDinle():
 
 
 def fareDinle():
-   dataPath = 'Data\\Train\\Fare'
-   if not os.path.exists(dataPath):
-      os.makedirs(dataPath)
+   if not os.path.exists(farePath):
+      os.makedirs(farePath)
    def on_move(x, y):
-      saveData(gameName,dataPath,x=x,y=y,key=0,event=0)
+      saveData(hwnd,farePath,x=x,y=y,key=0,event=0)
       print('Pointer moved to {0}'.format((x, y)))
 
    def on_click(x, y, button, pressed):
-      saveData(gameName,dataPath,x=x,y=y,key=1 if pressed else 0,event=0)
+      if win32gui.GetForegroundWindow() == hwnd:
+         saveData(hwnd,farePath,x=x,y=y,key=1 if pressed else 0,event=0)
       print('{0} at {1}'.format('Pressed' if pressed else 'Released', (x, y)))
 
    def on_scroll(x, y, dx, dy):
