@@ -12,3 +12,4 @@ Bu repo python dilini kullanarak ve yapay zekanın da nimetlerinden faydalanarak
 * pypiwin32
 * numpy
 * opencv-python
+* pillow
