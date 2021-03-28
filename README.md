@@ -7,3 +7,9 @@ Bu repo python dilini kullanarak ve yapay zekanın da nimetlerinden faydalanarak
 ## Projede Kullanılan Araç Gereçler.
 * Ide PyCharm
 * Windows 10
+## Kullanılan kütüphaneler 
+* pyhook3 (swig kurulması lazım)
+* pypiwin32
+* numpy
+* opencv-python
+* pillow
