@@ -4,6 +4,6 @@ Bu repo python dilini kullanarak ve yapay zekanın da nimetlerinden faydalanarak
 * dataset oluşturma (create_dataset)
 * Eğitim (Training)
 * Kullanım 
-##Projede Kullanılan Araç Gereçler.
+## Projede Kullanılan Araç Gereçler.
 * Ide PyCharm
 * Windows 10
