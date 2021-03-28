@@ -10,3 +10,5 @@ Bu repo python dilini kullanarak ve yapay zekanın da nimetlerinden faydalanarak
 ## Kullanılan kütüphaneler 
 * pyhook3 (swig kurulması lazım)
 * pypiwin32
+* numpy
+* opencv-python
