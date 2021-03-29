@@ -1,0 +1,2 @@
+pencere görüntüsü alma,
+https://pysource.com/2019/11/01/capture-screen-from-a-window-python-plays-tetris-p-1/
