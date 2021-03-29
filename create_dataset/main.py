@@ -1,11 +1,9 @@
-# This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-import PyHook3
-
-import os
+import os,time
+import cv2
+from common import gameScreen
+from pynput import mouse,keyboard
+import keyboard as kb
 fareEgitimYolu = os.path.join("..","Egitim","Veriler","Fare")
 klavyeEgitimYolu = os.path.join("..","Egitim","Veriler","Klavye")
 if not os.path.exists(fareEgitimYolu):
@@ -14,56 +12,31 @@ if not os.path.exists(klavyeEgitimYolu):
   os.makedirs(klavyeEgitimYolu)
 gameName = "AirRivals_R" # buradaki oyun adını değiştirmeniz gerekmektedir.
 
+#Fare İşlemleri
+
+from pynput import mouse
+
+def on_move(x, y):
+
+    gameScreen(fareEgitimYolu,x,y)
 
 
+def on_click(x, y, button, pressed):
+    print('{0} at {1}'.format(
+        'Pressed' if pressed else 'Released',
+        (x, y)))
 
 
+def on_scroll(x, y, dx, dy):
+    print('Scrolled {0} at {1}'.format(
+        'down' if dy < 0 else 'up',
+        (x, y)))
 
-def OnMouseEvent(event):
-  print('MessageName:',event.MessageName)
-  print('Message:',event.Message)
-  print('Time:',event.Time)
-  print('Window:',event.Window)
-  print('WindowName:',event.WindowName)
-  print('Position:',event.Position)
-  print('Wheel:',event.Wheel)
-  print('Injected:',event.Injected)
-  print('---')
-
-  # return True to pass the event to other handlers
-  # return False to stop the event from propagating
-  return True
-
-def OnKeyboardEvent(event):
-  print('MessageName:',event.MessageName)
-  print('Message:',event.Message)
-  print('Time:',event.Time)
-  print('Window:',event.Window)
-  print('WindowName:',event.WindowName)
-  print('Ascii:', event.Ascii, chr(event.Ascii))
-  print('Key:', event.Key)
-  print('KeyID:', event.KeyID)
-  print('ScanCode:', event.ScanCode)
-  print('Extended:', event.Extended)
-  print('Injected:', event.Injected)
-  print('Alt', event.Alt)
-  print('Transition', event.Transition)
-  print('---')
-
-  # return True to pass the event to other handlers
-  # return False to stop the event from propagating
-  return True
-
-# create the hook mananger
-hm = PyHook3.HookManager()
-# register two callbacks
-hm.MouseAllButtonsDown = OnMouseEvent
-hm.KeyDown = OnKeyboardEvent
-
-# hook into the mouse and keyboard events
-hm.HookMouse()
-hm.HookKeyboard()
-
-if __name__ == '__main__':
-  import pythoncom
-  pythoncom.PumpMessages()
+# Collect events until released
+# ...or, in a non-blocking fashion:
+listener = mouse.Listener(
+    on_move=on_move,
+    on_click=on_click,
+    on_scroll=on_scroll)
+listener.start()
+cv2.waitKey(30000)
