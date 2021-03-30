@@ -1,4 +1,5 @@
 import cv2
+import datetime as zmn
 import numpy as np
 from PIL import ImageGrab
 import win32gui
@@ -19,14 +20,15 @@ def gameScreen(path,x=-1,y=-1,action=0,key=0):
     if game_hwnd == 0:
         print("Oyun Açık Değil")
         return False
-    print(str(win32gui.GetForegroundWindow())+" ---- "+str(game_hwnd))
+    
     if win32gui.GetForegroundWindow() == game_hwnd:
         position = win32gui.GetWindowRect(game_hwnd)
         screenshot = ImageGrab.grab(position)
         screenshot = np.array(screenshot)
         screenshot = cv2.resize(screenshot, (150, 150))
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-
+        ek = "-"+str(zmn.datetime.now().timestamp())
         path = os.path.join(path,str(x)+","+str(y)+","+str(action)+","+str(key))
-        cv2.imwrite(path+".png",screenshot)
+        
+        cv2.imwrite(path+ek+".png",screenshot)
     return

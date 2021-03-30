@@ -1,5 +1,6 @@
 
 import os,time
+from threading import Thread
 import cv2
 from common import gameScreen
 from pynput import mouse,keyboard
@@ -13,30 +14,59 @@ if not os.path.exists(klavyeEgitimYolu):
 gameName = "AirRivals_R" # buradaki oyun adını değiştirmeniz gerekmektedir.
 
 #Fare İşlemleri
-
-from pynput import mouse
-
 def on_move(x, y):
-
+    thr = Thread(target=gameScreen,args=(fareEgitimYolu,x,y))
+    thr.start()
     gameScreen(fareEgitimYolu,x,y)
-
+    
 
 def on_click(x, y, button, pressed):
-    print('{0} at {1}'.format(
-        'Pressed' if pressed else 'Released',
-        (x, y)))
-
-
+    """
+      x: x Koordinatı
+      y: y Koordinati
+      action: 0=not action,1=pressed,2=released
+      key: 0=not key-left-right
+    """
+    action = 1 if pressed else 2
+    key = 'left' if button==button.left else 'right'
+    thr = Thread(target=gameScreen,args=(fareEgitimYolu,x,y,action,key))
+    thr.start()
 def on_scroll(x, y, dx, dy):
-    print('Scrolled {0} at {1}'.format(
-        'down' if dy < 0 else 'up',
-        (x, y)))
-
-# Collect events until released
-# ...or, in a non-blocking fashion:
-listener = mouse.Listener(
+      
+    pass
+listenerF = mouse.Listener(
     on_move=on_move,
     on_click=on_click,
     on_scroll=on_scroll)
-listener.start()
-cv2.waitKey(30000)
+listenerF.start()
+
+##Klavye ayarları
+def on_press(key):
+    tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
+    print("basilan : "+tus)
+    klv = Thread(target=gameScreen,args=(klavyeEgitimYolu,"-1","-1","1",tus))
+    klv.start()
+
+
+def on_release(key):
+      
+     tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
+     print("Bırakılan : "+tus)
+     klv = Thread(target=gameScreen,args=(klavyeEgitimYolu,"-1","-1","2",tus))
+     klv.start()
+   
+
+
+
+# ...or, in a non-blocking fashion:
+listenerK = keyboard.Listener(
+    on_press=on_press,
+    on_release=on_release)
+listenerK.start()
+
+
+
+
+
+
+cv2.waitKey(10000)
