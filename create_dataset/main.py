@@ -2,22 +2,24 @@
 import os,time
 from threading import Thread
 import cv2
-from common import gameScreen
+from common import gameScreenVT,gameScreenTPL
 from pynput import mouse,keyboard
 import keyboard as kb
+"""
+#data diske yazilirsa
 fareEgitimYolu = os.path.join("..","Egitim","Veriler","Fare")
 klavyeEgitimYolu = os.path.join("..","Egitim","Veriler","Klavye")
 if not os.path.exists(fareEgitimYolu):
   os.makedirs(fareEgitimYolu)
 if not os.path.exists(klavyeEgitimYolu):
   os.makedirs(klavyeEgitimYolu)
+"""
 gameName = "AirRivals_R" # buradaki oyun adını değiştirmeniz gerekmektedir.
 
 #Fare İşlemleri
 def on_move(x, y):
-    thr = Thread(target=gameScreen,args=(fareEgitimYolu,x,y))
-    thr.start()
-    gameScreen(fareEgitimYolu,x,y)
+  gameScreenTPL(x,y)
+
     
 
 def on_click(x, y, button, pressed):
@@ -29,8 +31,9 @@ def on_click(x, y, button, pressed):
     """
     action = 1 if pressed else 2
     key = 'left' if button==button.left else 'right'
-    thr = Thread(target=gameScreen,args=(fareEgitimYolu,x,y,action,key))
-    thr.start()
+    th = Thread(target=gameScreenVT,args=(gameName, x, y, action, key))
+    th.start()
+
 def on_scroll(x, y, dx, dy):
       
     pass
@@ -44,16 +47,13 @@ listenerF.start()
 def on_press(key):
     tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
     print("basilan : "+tus)
-    klv = Thread(target=gameScreen,args=(klavyeEgitimYolu,"-1","-1","1",tus))
-    klv.start()
-
+    gameScreenVT(gameName, "-1", "-1", "1", tus)
 
 def on_release(key):
       
      tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
      print("Bırakılan : "+tus)
-     klv = Thread(target=gameScreen,args=(klavyeEgitimYolu,"-1","-1","2",tus))
-     klv.start()
+     gameScreenVT(gameName, "-1", "-1", "2", tus)
    
 
 
@@ -62,11 +62,11 @@ def on_release(key):
 listenerK = keyboard.Listener(
     on_press=on_press,
     on_release=on_release)
-listenerK.start()
+#listenerK.start()
 
 
 
 
 
 
-cv2.waitKey(10000)
+cv2.waitKey(20*1000)

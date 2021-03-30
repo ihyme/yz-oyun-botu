@@ -1,6 +1,6 @@
 @echo off
 
-set "VIRTUAL_ENV=C:\Sandbox\yz-oyun-botu\create_dataset\venv"
+set "VIRTUAL_ENV=I:\AceOnlineProje\create_dataset\venv"
 
 
 
