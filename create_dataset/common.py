@@ -37,6 +37,7 @@ def gameScreenVT(path=None,x=-1,y=-1,action=0,key=0):
 
 
 def gameScreenTPL(path=None, x=-1, y=-1, action=0, key=0):
+    print('\r',end='')
     game_hwnd = 0
     for (hwnd, win_text) in windows_list:
         if gameName in win_text:
@@ -51,12 +52,25 @@ def gameScreenTPL(path=None, x=-1, y=-1, action=0, key=0):
         screenshot = np.array(screenshot)
         screenshot = cv2.resize(screenshot, (150, 150))
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-        etiket = str(x) + "-" + str(y) + "-" + str(action) + "-" + str(key)
+        etiket = str(x) + "," + str(y) + "," + str(action) + "," + str(key)
         retval, buffImg = cv2.imencode('.jpg', screenshot)
         bs64rsm = base64.b64encode(buffImg)
         bs64rsm = bs64rsm.decode('utf-8')
         datasets.append((bs64rsm,etiket))
-        print('\rDataset Boyutu : '+str(len(datasets)),end='')
+        print('\rBiriktirilen Dataset Sayısı : '+str(len(datasets)),end='')
+    else:
+        if len(datasets) > 1 :
+            db = mysql.connector.connect(  host="localhost",
+                                  user="root",
+                                  password="",
+                                  database="datasets"
+                                     )
+            cursor = db.cursor()
+            bs64rsm,etiket = datasets[0]
+            cursor.execute("INSERT INTO datasets VALUES(id,%s,%s)" ,(bs64rsm,etiket))
+            db.commit()
+            datasets.pop(0)
+            print('\rDatabase İşlenmeyi Bekleyin : '+str(len(datasets)),end='')
 
     return
 
