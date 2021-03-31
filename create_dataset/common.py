@@ -1,6 +1,7 @@
 import cv2
 import datetime as zmn
 import numpy as np
+import pyautogui as py
 from PIL import ImageGrab
 import win32gui
 import os
@@ -15,33 +16,23 @@ def enum_win(hwnd, result):
 win32gui.EnumWindows(enum_win, toplist)
 
 def gameScreenVT(path=None,x=-1,y=-1,action=0,key=0):
-    game_hwnd = 0
-    for (hwnd, win_text) in windows_list:
-        if gameName in win_text:
-            game_hwnd = hwnd
-    if game_hwnd == 0:
-        print("Oyun Açık Değil")
-        return False
-    
-    if win32gui.GetForegroundWindow() == game_hwnd:
-
-        db = mysql.connector.connect(  host="localhost",
+    db = mysql.connector.connect(  host="localhost",
                                   user="root",
                                   password="",
                                   database="datasets"
                                      )
-        cursor = db.cursor()
-        position = win32gui.GetWindowRect(game_hwnd)
-        screenshot = ImageGrab.grab(position)
-        screenshot = np.array(screenshot)
-        screenshot = cv2.resize(screenshot, (150, 150))
-        screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-        etiket = str(x)+"-"+str(y)+"-"+str(action)+"-"+str(key)
-        retval,buffImg = cv2.imencode('.jpg',screenshot)
-        bs64rsm = base64.b64encode(buffImg)
-        bs64rsm = bs64rsm.decode('utf-8')
-        cursor.execute("INSERT INTO datasets VALUES(id,%s,%s)" ,(bs64rsm,etiket))
-        db.commit()
+    cursor = db.cursor()
+   # position = py.screenshot()
+    screenshot = py.screenshot() # ImageGrab.grab(position)
+    screenshot = np.array(screenshot)
+    screenshot = cv2.resize(screenshot, (150, 150))
+    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+    etiket = str(x)+","+str(y)+","+str(action)+","+str(key)
+    retval,buffImg = cv2.imencode('.jpg',screenshot)
+    bs64rsm = base64.b64encode(buffImg)
+    bs64rsm = bs64rsm.decode('utf-8')
+    cursor.execute("INSERT INTO datasets VALUES(id,%s,%s)" ,(bs64rsm,etiket))
+    db.commit()
     return
 
 

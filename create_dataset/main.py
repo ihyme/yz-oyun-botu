@@ -18,7 +18,8 @@ gameName = "AirRivals_R" # buradaki oyun adını değiştirmeniz gerekmektedir.
 
 #Fare İşlemleri
 def on_move(x, y):
-  gameScreenTPL(x,y)
+  x = Thread(target=gameScreenVT,args=(gameName,x,y))
+  x.start()
 
     
 
@@ -46,14 +47,13 @@ listenerF.start()
 ##Klavye ayarları
 def on_press(key):
     tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
-    print("basilan : "+tus)
-    gameScreenVT(gameName, "-1", "-1", "1", tus)
-
+    th = Thread(target=gameScreenVT,args=(gameName, "-1", "-1", "1", tus))
+    th.start()
 def on_release(key):
       
      tus = str(key).strip("'") if len(str(key).strip("'"))<4 else str(key)[4:]
-     print("Bırakılan : "+tus)
-     gameScreenVT(gameName, "-1", "-1", "2", tus)
+     th = Thread(target=gameScreenVT,args=(gameName, "-1", "-1", "2", tus))
+     th.start()
    
 
 
@@ -62,11 +62,11 @@ def on_release(key):
 listenerK = keyboard.Listener(
     on_press=on_press,
     on_release=on_release)
-#listenerK.start()
+listenerK.start()
 
 
 
 
 
 
-cv2.waitKey(20*1000)
+cv2.waitKey(60*1000)
