@@ -5,6 +5,7 @@ import numpy as np
 import pyautogui as py
 from PIL import ImageGrab
 import win32gui
+from win32api import GetSystemMetrics
 import os
 import base64,mysql.connector
 gameName = "AirRivals_R"
@@ -53,7 +54,14 @@ def gameScreenTPLM(path=None, x=-1, y=-1, action=0, key=0):
         return False
 
     if win32gui.GetForegroundWindow() == game_hwnd:
+        
         position = win32gui.GetWindowRect(game_hwnd)
+        px,py,ww,wh  = position
+      
+        if not x == "-1":
+            x = (GetSystemMetrics(0) - ww  ) + (x-px)  #100 farkı ne biilmiyorum
+        if not y == "-1":
+            y = (GetSystemMetrics(1)-wh) + (y-py)
         screenshot = ImageGrab.grab(position)
         screenshot = np.array(screenshot)
         screenshot = cv2.resize(screenshot, (150, 150))
@@ -63,7 +71,7 @@ def gameScreenTPLM(path=None, x=-1, y=-1, action=0, key=0):
         bs64rsm = base64.b64encode(buffImg)
         bs64rsm = bs64rsm.decode('utf-8')
         datasets.append((bs64rsm,etiket))
-        print('\rBiriktirilen Dataset Sayısı : '+str(len(datasets)),end='')
+        print('\rBiriktirilen Dataset Sayısı : '+str(len(datasets))+" Etiket : "+etiket,end='')
     else:
         if not dbConnected:
             cnn = pymongo.MongoClient("mongodb+srv://ismail56:ismail56@veriler.owzgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
@@ -124,22 +132,11 @@ def gameScreenTPL(path=None, x=-1, y=-1, action=0, key=0):
     return
 
 def gameScreen(path,x=-1,y=-1,action=0,key=0):
-    game_hwnd = 0
-    for (hwnd, win_text) in windows_list:
-        if gameName in win_text:
-            game_hwnd = hwnd
-    if game_hwnd == 0:
-        print("Oyun Açık Değil")
-        return False
-    
-    if win32gui.GetForegroundWindow() == game_hwnd:
-        position = win32gui.GetWindowRect(game_hwnd)
-        screenshot = ImageGrab.grab(position)
+        screenshot = ImageGrab.grab()
         screenshot = np.array(screenshot)
         screenshot = cv2.resize(screenshot, (150, 150))
         screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
         ek = "-"+str(zmn.datetime.now().timestamp())
         path = os.path.join(path,str(x)+","+str(y)+","+str(action)+","+str(key))
-        
         cv2.imwrite(path+ek+".png",screenshot)
-    return
+        return
